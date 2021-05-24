@@ -3,9 +3,10 @@
 
 Java-specific language server &amp; Tree-sitter powered tools.
 
-### Requires
+### Requirements
 - Neovim >= 0.5
 - [nvim-treesitter/](https://github.com/nvim-treesitter/nvim-treesitter)
+- A Java language server, such as [jdt.ls](https://github.com/eclipse/eclipse.jdt.ls)
 
 ### Recommended
 - [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls)
