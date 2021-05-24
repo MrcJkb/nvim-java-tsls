@@ -24,6 +24,6 @@ This plugin should not implement full-fledged refactoring capabilities, as those
 
 ### Todo
 
+- [x] Yank public method definitions from class
+- [x] Yank interface definition from class
 - [ ] Yank implementation definition from interface
-- [ ] Yank public method definitions from class
-- [ ] Yank interface definition from class
