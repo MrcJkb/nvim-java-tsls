@@ -14,8 +14,6 @@ local function get_root_class_name(document_symbols)
   local class_name_predicate = function(document_symbol)
     -- print(vim.inspect(document_symbol))
     return document_symbol.kind == CLASS_KIND
-      and document_symbol.location
-      and string.find(document_symbol.location.uri, document_symbol.containerName)
   end
   local class_table = table_utils.filter_table(class_name_predicate, document_symbols)
   if not class_table or vim.tbl_isempty(class_table) then
@@ -39,7 +37,7 @@ end
 --@param (table) an LSP method document symbol
 --@return (string)
 local function get_method_definition(method_symbol)
-  local line = method_symbol.location.range.start.line
+  local line = method_symbol.range.start.line
   local line_content = nvim_client.current_buf_get_line_content(line)
   line_content = string.gsub(line_content, ' public ', '')
   line_content = string.gsub(line_content, '{', ';')
@@ -53,10 +51,11 @@ end
 local function get_public_method_definitions(document_symbols, class_name)
   local res = {}
   local public_method_predicate = function(document_symbol)
+    print(vim.inspect(document_symbol))
     return document_symbol.kind == METHOD_KIND
       and document_symbol.containerName == class_name
-      and document_symbol.location
-      and current_buf_contains_public_keyword(document_symbol.location.range.start.line)
+      and document_symbol.range
+      and current_buf_contains_public_keyword(document_symbol.range.start.line)
   end
   local public_methods_table = table_utils.filter_table(public_method_predicate, document_symbols)
   if not public_methods_table or vim.tbl_isempty(public_methods_table) then
@@ -99,6 +98,14 @@ M.yank_java_interface = function()
   -- print(interface_definition)
   nvim_client.set_register(interface_definition)
   return interface_definition
+end
+
+-- Sets up Ex commands for LSP powered features.
+M.setup_lsp_commands = function()
+ vim.cmd[[
+  command! -nargs=0 JYankInterface :lua require('java_tsls').yank_java_interface()
+  command! -nargs=0 JYankPublicMethods :lua require('java_tsls').yank_public_method_definitions()
+ ]]
 end
 
 return M
